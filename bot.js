@@ -158,4 +158,66 @@ client.on('message',async message => {
   }
 });
  
-client.login('NTg5MjYxMzIxMTI4OTAyNzE0.XQRGZQ.UPRg2a1RDF4Z2URA6UVZz3As1Jc');
+client.on('message', message => {
+if (message.content.startsWith(prefix + 'nn')) {
+        let onlineM = message.guild.members.filter(m => m.presence.status !== "offline");
+        let verifyL = ["None", "Low", "Medium", "Hard", "Extreme"];
+        let region = {
+            'brazil': "`Brazil`",
+            'eu-central': "`Central Europe`",
+            'singapore': "`Singapore`",
+            'us-central': "`US Central`",
+            'sydney': "`Sydney`",
+            'us-east': "`US East`",
+            'us-south': "`US South`",
+            'us-west': "`US West`",
+            'eu-west': "`Western Europe`",
+            'london': "`London`",
+            'amsterdam': "`Amsterdam`",
+            'hongkong': "`Hong Kong`",
+            'russia': "`Russia`"
+        };    
+let pages = [`- Server Name \`${message.guild.name}\`\n- Created At \`${moment(message.guild.createdAt).format('D/MM/YYYY h:mm a')}\`\n- Total Members \`${message.guild.memberCount} [Online: ${onlineM.size}]\`\n- Server Owner \`${message.guild.owner.user.tag}\`\n- Channels \`${message.guild.channels.filter(m => m.type == 'text').size} Text || ${message.guild.channels.filter(m => m.type == 'voice').size} Voice\`\n- Categories \`${message.guild.channels.filter(m => m.type == 'category').size}\`\n- Roles \`${message.guild.roles.size}\`\n- Region \`${region[message.guild.region]}\`\n- Verification Level \`${verifyL[message.guild.verificationLevel]}\`\n- Server ID \`${message.guild.id}\``,`- اسم السيرفر \`${message.guild.name}\`\n- وقت صنع السيرفر \`${moment(message.guild.createdAt).format('D/MM/YYYY h:mm a')}\`\n- عدد اعضاء \`${message.guild.memberCount} [متواجدين: ${onlineM.size}]\`\n- منشاء السيرفر \`${message.guild.owner.user.tag}\`\n- رومات \`${message.guild.channels.filter(m => m.type == 'text').size} كتابية || ${message.guild.channels.filter(m => m.type == 'voice').size} صوتية\`\n- الاقسام \`${message.guild.channels.filter(m => m.type == 'category').size}\`\n- رتب \`${message.guild.roles.size}\`\n- نوع السيرفر \`${region[message.guild.region]}\`\n- مستوى التحقق \`${verifyL[message.guild.verificationLevel]}\`\n- ايدي السيرفر \`${message.guild.id}\``]
+    let page = 1;
+ 
+    let embed = new Discord.RichEmbed()
+    .setColor('#36393e')
+ .setThumbnail(message.guild.iconURL)
+        .setAuthor(`${message.guild.name}, Server Info`)
+    .setFooter(`Page ${page} of ${pages.length}`)
+    .setDescription(pages[page-1])
+ 
+    message.channel.sendEmbed(embed).then(msg => {
+ 
+        msg.react('⏮').then( r => {
+            msg.react('⏭')
+ 
+ 
+        const backwardsFilter = (reaction, user) => reaction.emoji.name === '⏮' && user.id === message.author.id;
+        const forwardsFilter = (reaction, user) => reaction.emoji.name === '⏭' && user.id === message.author.id;
+ 
+ 
+        const backwards = msg.createReactionCollector(backwardsFilter, { time: 2000000});
+        const forwards = msg.createReactionCollector(forwardsFilter, { time: 2000000});
+ 
+ 
+ 
+        backwards.on('collect', r => {
+            if (page === 1) return;
+            page--;
+            embed.setDescription(pages[page-1]);
+            embed.setFooter(`Page ${page} of ${pages.length}`);
+            msg.edit(embed)
+        })
+        forwards.on('collect', r => {
+            if (page === pages.length) return;
+     
+      page++;
+            embed.setDescription(pages[page-1]);
+            embed.setFooter(`Page ${page} of ${pages.length}`);
+            msg.edit(embed)
+        })
+        })
+    })
+    }
+});
