@@ -87,3 +87,10 @@ client.on("message", message => {
             return;
         }
     });
+client.on('message', message => {
+    const swearWords = ["heck", "damn","darn"]; // نصابين 
+    if( swearWords.some(word => message.content.includes(word)) ) {
+        message.delete();
+        message.author.send('Hey! That word has been banned, please don\'t use it!');
+      }
+}) //Toxic Codes
